@@ -1,24 +1,9 @@
 version: '3.7'
 services:
-  db:
-    image: nouchka/sqlite3:latest
-    env_file:
-      - ./.env
-    volumes:
-      - ./code:/app
-    restart: on-failure
-    ports:
-      - "9000:9000"
   bot:
     build: .
-#    command: sh -c "make migrate && python -m bot"
     env_file:
       - ./.env
     volumes:
-#      - bot_data_db:/root/Academy_bot
       - /root/Academy_bot:/app
     restart: always
-#    depends_on:
-#      - db
-#volumes:
-#  bot_data_db:
