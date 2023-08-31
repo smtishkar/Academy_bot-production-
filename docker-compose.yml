@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  bot:
+    build: .
+    env_file:
+      - ./.env
+    volumes:
+      - /root/Academy_bot:/app
+    restart: always
