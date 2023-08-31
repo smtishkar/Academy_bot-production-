@@ -1,16 +1,18 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from aiogram.utils import executor
+from create_bot import dp
+from data_base import sqlite_db
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+async def on_startup(_):
+    print('Бот запущен')                #Выводит в консоль служебную информацию, дальше поключим сюда еще и СУБД
+    sqlite_db.sql_users()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+from handlers import client,admin,other
+
+admin.register_handlers_admin(dp)
+client.register_handlers_client(dp)
+other.register_handlers_other(dp)
+
+
+executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
