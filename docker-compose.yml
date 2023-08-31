@@ -7,3 +7,4 @@ services:
     volumes:
       - /root/Academy_bot:/app
     restart: always
+

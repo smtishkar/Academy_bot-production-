@@ -50,7 +50,7 @@ class FSMScedule(StatesGroup):
 
 
 # Основная комада для доступа к функциям админа. Получаем ID текущего модератора
-async def make_changes_commnd(message: types.Message):
+async def make_changes_command(message: types.Message):
     global chat_admins
     chat_admins = await bot.get_chat_administrators(CHANEL_ID)
     for admins in chat_admins:
@@ -66,7 +66,7 @@ async def make_changes_commnd(message: types.Message):
 """*********************************БЛОК ЗАГРУЗКИ ОПИСАНИЯ ТРЕНИНГОВ***************************************"""
 
 
-async def training_description_meun(message: types.Message):
+async def training_description_menu(message: types.Message):
     if message.from_user.id in admin_list:
         await bot.send_message(message.from_user.id, 'Выберите пункт меню:',
                                reply_markup=admin_kb.kb_training_description)
@@ -82,7 +82,7 @@ async def cm_training_start(message: types.Message):
 
 async def load_training_photo(message: types.Message, state: FSMContext):
     if message.from_user.id in admin_list:
-        if message.text == 'Отменить ввод':  # TODO придумать обработку отмены. Из-за того, что просим фото у нас не получается отмена
+        if message.text == 'Отменить ввод':  # TODO придумать обработку отмены. Из-за фото у нас не получается отмена
             await state.finish()
             await message.reply('Ввод отменен, выберите пункт меню', reply_markup=admin_kb.kb_training_description)
         else:
@@ -171,7 +171,8 @@ async def delete_training_description(message: types.Message):
         read = await sqlite_db.sql_read_trainings2()
         for ret in read:
             await bot.send_photo(message.from_user.id, ret[0],
-                                 f'Название: {ret[1]}\nЦелевая аудитория: {ret[3]}\nСодержание:\n{ret[4]}\nФормат: {ret[5]}\nЦена: {ret[-1]}')
+                                 f'Название: {ret[1]}\nЦелевая аудитория: {ret[3]}\nСодержание:\n{ret[4]}\n\
+                                 Формат: {ret[5]}\nЦена: {ret[-1]}')
             await bot.send_message(chat_id=message.from_user.id,
                                    text='^^^',
                                    reply_markup=InlineKeyboardMarkup().add(
@@ -301,7 +302,9 @@ async def questions_check_for_work(message: types.Message):
         read = await sqlite_db.sql_read_questions2()
         for ret in read:
             await bot.send_message(message.from_user.id,
-                                   f'Question_id: {ret[0]}\nUser_ID: {ret[1]}\nФИО: {ret[2]} {ret[3]}\nДолжность: {ret[4]}\nДЦ: {ret[5]}\nВопрос: {ret[6]}\nСтатус: {ret[7]}\nОтвет: {ret[8]}')
+                                   f'Question_id: {ret[0]}\nUser_ID: {ret[1]}\nФИО: {ret[2]} {ret[3]}\n\
+                                   Должность: {ret[4]}\nДЦ: {ret[5]}\nВопрос: {ret[6]}\nСтатус: {ret[7]}\
+                                   Ответ: {ret[8]}')
             await bot.send_message(chat_id=message.from_user.id,
                                    text='^^^',
                                    reply_markup=InlineKeyboardMarkup().add(
@@ -392,7 +395,9 @@ async def questions_check_for_work(message: types.Message):
         read = await sqlite_db.sql_read_questions2()
         for ret in read:
             await bot.send_message(message.from_user.id,
-                                   f'Question_id: {ret[0]}\nUser_ID: {ret[1]}\nФИО: {ret[2]} {ret[3]}\nДолжность: {ret[4]}\nДЦ: {ret[5]}\nВопрос: {ret[6]}\nСтатус: {ret[7]}\nОтвет: {ret[8]}')
+                                   f'Question_id: {ret[0]}\nUser_ID: {ret[1]}\nФИО: {ret[2]} {ret[3]}\n\
+                                   Должность: {ret[4]}\nДЦ: {ret[5]}\nВопрос: {ret[6]}\nСтатус: {ret[7]}\n\
+                                   Ответ: {ret[8]}')
             await bot.send_message(chat_id=message.from_user.id,
                                    text='^^^',
                                    reply_markup=InlineKeyboardMarkup().add(
@@ -499,7 +504,8 @@ async def delete_schedule(message: types.Message):
         read = await sqlite_db.sql_read_schedule2()
         for ret in read:
             await bot.send_message(message.from_user.id,
-                                   f'Название: {ret[1]}\nНачало тренинга: {ret[2]}\nОкончание тренинга: {ret[3]}\nФормат: {ret[4]}\nЦена: {ret[-1]}')
+                                   f'Название: {ret[1]}\nНачало тренинга: {ret[2]}\nОкончание тренинга: {ret[3]}\n\
+                                   Формат: {ret[4]}\nЦена: {ret[-1]}')
             await bot.send_message(chat_id=message.from_user.id,
                                    text='^^^',
                                    reply_markup=InlineKeyboardMarkup().add(
@@ -552,7 +558,7 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(questions_check, lambda message: 'Проверить вопросы дилеров' in message.text)
     dp.register_message_handler(questions_check_for_work, lambda message: 'Изменить статус' in message.text)
     dp.register_message_handler(load_price, state=FSMAdmin.price)
-    dp.register_message_handler(make_changes_commnd, commands=['moderator'])
+    dp.register_message_handler(make_changes_command, commands=['moderator'])
     dp.register_message_handler(cm_training_start, lambda message: 'Добавить описание тренинга' in message.text,
                                 state=None)
     dp.register_message_handler(load_training_photo, content_types=['photo'], state=FSMTrainings.photo)
@@ -582,7 +588,6 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(menu_schedule, lambda message: 'Тренинг расписание' in message.text)
     dp.register_message_handler(delete_schedule, lambda message: 'Удалить тренинг из расписания' in message.text)
     dp.register_message_handler(main_menu, lambda message: 'Главное меню' in message.text)
-    dp.register_message_handler(training_description_meun, lambda message: 'Список тренингов' in message.text)
+    dp.register_message_handler(training_description_menu, lambda message: 'Список тренингов' in message.text)
     dp.register_message_handler(delete_training_description,
                                 lambda message: 'Удалить опсиание тренинга' in message.text)
-    # dp.register_message_handler(db_update, lambda message: 'Обновить базу' in message.text)

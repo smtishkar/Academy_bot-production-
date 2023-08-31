@@ -22,16 +22,12 @@ class FSMReset(StatesGroup):
     new_id = State()
 
 
-class FSMTraining_request(StatesGroup):
+class FSMTrainingRequest(StatesGroup):
     request = State()
 
 
-excel_data_df = pandas.read_excel('lms_id.xlsx', sheet_name='sheet1')  # вариант через excel
+excel_data_df = pandas.read_excel('lms_id.xlsx', sheet_name='sheet1')
 id_saba = excel_data_df['ID'].tolist()
-# with open('lms_id.csv', 'r') as file:                                     #вариант через csv #TODO сделать админу кнопку обновления базы
-#     id_saba = file.read().splitlines()
-# print(id_saba)
-# id_saba = ['U2435834']
 
 """*********************************БЛОК РЕГИСТРАЦИИ ПОЛЬЗОВАТЕЛЕЙ***************************************"""
 
@@ -44,13 +40,19 @@ async def client_start(message: types.Message):
     for key, values in test_dict.items():
         if message.from_user.id == key in test_dict and values in id_saba:
             await bot.send_message(message.from_user.id, 'Проверка ID номеров пройдена успешно!')
-            await bot.send_message(message.from_user.id, 'Добро пожаловать в Академию👋! Я бот, который будет помогать вам получать интересующую вас информацию и всегда оставаться в курсе последних новостей Академии Тойота 📰. Я нахожусь на первоначальном этапе разработки и поддерживаюсь энтузиазмом сотрудников академии. Постепенно моя функциональность будет расти и я буду еще более полезен.', reply_markup=kb_client)
+            await bot.send_message(message.from_user.id,
+                                   'Добро пожаловать в Академию👋! Я бот, который будет помогать вам получать',
+                                   'интересующую вас информацию и всегда оставаться в курсе последних новостей',
+                                   'Академии Тойота 📰. Я нахожусь на первоначальном этапе разработки и поддерживаюсь',
+                                   'энтузиазмом сотрудников академии. Постепенно моя функциональность будет',
+                                   'расти и я буду еще более полезен.',
+                                   reply_markup=kb_client)
         elif message.from_user.id == key and values not in id_saba:
             await bot.send_message(message.from_user.id,
-                                   'Вы есть в базе, но видимо указан не корректный ID в учебном портале, обратитесь к администратору',
-                                   reply_markup=kb_ask)  # TODO теперь все равно можно попасть во внтурь
+                                   'Вы есть в базе, но видимо указан не корректный ID в учебном портале,',
+                                   'обратитесь к администратору',
+                                   reply_markup=kb_ask)
             await bot.send_message(message.from_user.id, f'Указанный SABA ID - {values}')
-        # elif message.from_user.id not in test_dict:
     if message.from_user.id not in test_dict:
         await FSMClient.saba_id.set()
         await bot.send_message(message.from_user.id, 'Давайте начнем регистрацию!')
@@ -63,8 +65,6 @@ async def load_saba_id(message: types.Message, state: FSMContext):
     test_dict = {}
     for ret in read:
         test_dict[ret[0]] = ret[1]
-
-    # for key, values in test_dict.items():
     if str(message.text) not in test_dict.values():
         await message.reply(message.text)
         async with state.proxy() as data:
@@ -75,8 +75,6 @@ async def load_saba_id(message: types.Message, state: FSMContext):
         await state.finish()
         await message.reply(
             'Вы зарегистрированы, теперь можете еще раз ввести "/start" для доступа к основным функциям')
-    # async with state.proxy() as data:        # софрмированный пакет информации отправляли в чат. Вместо него сейчас будет база данных
-    #     await message.reply(str(data))
     else:
         async with state.proxy() as data:
             data['user_id'] = message.from_user.id
@@ -122,9 +120,10 @@ async def load_question(message: types.Message, state: FSMContext):
 
 
 async def cm_training_request_start(message: types.Message):
-    await FSMTraining_request.request.set()
+    await FSMTrainingRequest.request.set()
     await bot.send_message(message.from_user.id,
-                           'Введите информацию в свободной форме. Обязательно укажите ФИО участника, дилерский центр, название тренанга/ов и дату начала',
+                           'Введите информацию в свободной форме. Обязательно укажите ФИО участника, дилерский центр,',
+                           'название тренанга/ов и дату начала',
                            reply_markup=kb_cancel)
 
 
@@ -142,16 +141,15 @@ async def load_request(message: types.Message, state: FSMContext):
                     data['last_name'] = ret[2]
                     data['job_title'] = ret[3]
                     data['dlr_for'] = ret[4]
-                    data['request'] = message.text
+                    data['request'] = "Запись на тренинг -" + message.text
                     data['question_status'] = "in process"
                     data['Creation_time'] = datetime.now().date()
-        # await sqlite_db.sql_add_training_requests(state)
         await sqlite_db.sql_add_questions(state)
         await state.finish()
         await message.reply('Ваш запрос принят! Скоро мы вернемся к вам с информацией.')
 
 
-"""*********************************БЛОК Корректировки ID****************************************************"""
+"""*********************************БЛОК ЗАПРОСА НА КОРРЕКТИРОВКУ ID**********************************************"""
 
 
 async def cm_id_correction(message: types.Message):
@@ -181,34 +179,40 @@ async def load_new_id(message: types.Message, state: FSMContext):
 """***************************************************************************************************************"""
 
 
+# Базовая команда старт
 async def commands_start(message: types.Message):
     read = await sqlite_db.sql_read_users()
     test_dict = {}
     for ret in read:
         test_dict[ret[0]] = ret[1]
-    # await bot.send_message(message.from_user.id, test_dict)
     for key, values in test_dict.items():
         if message.from_user.id == key and values in id_saba:
             await bot.send_message(message.from_user.id, 'Проверка ID номеров пройдена успешно!')
             await bot.send_message(message.from_user.id,
-                                   'Добро пожаловать в Академию👋! Я бот, который будет помогать вам получать интересующую вас информацию и всегда оставаться в курсе последних новостей Академии Тойота 📰. Я нахожусь на первоначальном этапе разработки и поддерживаюсь энтузиазмом сотрудников академии. Постепенно моя функциональность будет расти и я буду еще более полезен.',
+                                   'Добро пожаловать в Академию👋! Я бот, который будет помогать вам получать',
+                                   'интересующую вас информацию и всегда оставаться в курсе последних новостей',
+                                   'Академии Тойота 📰. Я нахожусь на первоначальном этапе разработки и',
+                                   'поддерживаюсь энтузиазмом сотрудников академии. Постепенно моя функциональность',
+                                   'будет расти и я буду еще более полезен.',
                                    reply_markup=kb_client)
             break
         elif message.from_user.id == key and values not in id_saba:
             await bot.send_message(message.from_user.id,
-                                   'Вы есть в базе, но видимо указан не корректный ID в учебном портале, обратитесь к администратору',
+                                   'Вы есть в базе, но видимо указан не корректный ID в учебном портале,',
+                                   'обратитесь к администратору',
                                    reply_markup=kb_ask)  # TODO блок обращения к админу
             await bot.send_message(message.from_user.id, f'Указанный SABA ID - {values}')
             break
-        # elif message.from_user.id not in test_dict:
     if message.from_user.id not in test_dict:
         await bot.send_message(message.from_user.id,
                                'Вам нужно пройти регистрацию, для этого нажмите соответсвующую кнопку',
                                reply_markup=registration_kb)
-    # await bot.send_message(message.from_user.id, 'Вам нужно пройти регистрацию, для этого нажмите соответсвующую кнопку', reply_markup=registration_kb)                #Это заглушка для создания первого юзера в базе
+    # await bot.send_message(message.from_user.id, 'Вам нужно пройти регистрацию, для этого нажмите',
+    # 'соответсвующую кнопку', reply_markup=registration_kb)        #Это заглушка для создания первого юзера в базе
     await message.delete()
 
 
+# Отправка контактов
 async def contacts(message: types.Message):
     read = await sqlite_db.sql_read_users()
     test_dict = {}
@@ -224,6 +228,7 @@ async def contacts(message: types.Message):
                                    'Родионов</i>: 8-926-012-22-23', parse_mode='html')
 
 
+# Отправка гайда
 async def guide(message: types.Message):
     read = await sqlite_db.sql_read_users()
     test_dict = {}
@@ -234,17 +239,14 @@ async def guide(message: types.Message):
             await message.answer_document(open('guide.pdf', 'rb'))
 
 
+# Не позволяет вводить что угодно, только команды
 async def empty(message: types.Message):
     await bot.send_message(message.from_user.id, 'Нет такой команды')
     await message.delete()
 
 
-@dp.message_handler(commands=['Меню'])
-async def menu_command(message: types.Message):
-    await sqlite_db.sql_read(message)
-
-
 """*********************************ОПИСАНИЕ ТРЕНИНГОВ****************************************************"""
+
 
 async def menu_trainings(message: types.Message):
     read = await sqlite_db.sql_read_users()
@@ -253,7 +255,6 @@ async def menu_trainings(message: types.Message):
         test_dict[ret[0]] = ret[1]
     for key, values in test_dict.items():
         if message.from_user.id == key and values in id_saba:
-            # await FSMTraining.training_area.set()
             await bot.send_message(message.from_user.id, 'Выберите направление:', reply_markup=trainings_kb)
 
 
@@ -304,17 +305,7 @@ async def back_to_main_menu(message: types.Message):
     await bot.send_message(message.from_user.id, 'Выберите пункт меню:', reply_markup=kb_client)
 
 
-
 """*********************************ОПИСАНИЕ ТРЕНИНГОВ****************************************************"""
-
-# async def training_plan(message: types.Message):            #СТАРЫЙ после добавления удалить
-#     read = await sqlite_db.sql_read_users()
-#     test_dict = {}
-#     for ret in read:
-#         test_dict[ret[0]] = ret[1]
-#     for key, values in test_dict.items():
-#         if message.from_user.id == key and values in id_saba:
-#             await sqlite_db.sql_read_schedule(message)
 
 
 async def training_plan(message: types.Message):
@@ -324,7 +315,6 @@ async def training_plan(message: types.Message):
         test_dict[ret[0]] = ret[1]
     for key, values in test_dict.items():
         if message.from_user.id == key and values in id_saba:
-            # await sqlite_db.sql_read_schedule(message)
             await bot.send_message(message.from_user.id, 'Выберите направление:', reply_markup=schedule_kb)
 
 
@@ -335,7 +325,6 @@ async def tech_schedule(message: types.Message):
         test_dict[ret[0]] = ret[1]
     for key, values in test_dict.items():
         if message.from_user.id == key and values in id_saba:
-            # await sqlite_db.sql_read_tech_trainings(message)
             await sqlite_db.sql_read_tech_schedule(message)
             await bot.send_message(message.from_user.id, 'Выберите направление:', reply_markup=schedule_kb)
 
@@ -347,7 +336,6 @@ async def non_tech_schedule(message: types.Message):
         test_dict[ret[0]] = ret[1]
     for key, values in test_dict.items():
         if message.from_user.id == key and values in id_saba:
-            # await sqlite_db.sql_read_tech_trainings(message)
             await sqlite_db.sql_read_non_tech_schedule(message)
             await bot.send_message(message.from_user.id, 'Выберите направление:', reply_markup=schedule_kb)
 
@@ -359,11 +347,8 @@ async def ucar_schedule(message: types.Message):
         test_dict[ret[0]] = ret[1]
     for key, values in test_dict.items():
         if message.from_user.id == key and values in id_saba:
-            # await sqlite_db.sql_read_tech_trainings(message)
             await sqlite_db.sql_read_ucar_schedule(message)
             await bot.send_message(message.from_user.id, 'Выберите направление:', reply_markup=schedule_kb)
-
-
 
 
 def register_handlers_client(dp: Dispatcher):
@@ -376,7 +361,6 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(contacts, lambda message: 'Контакты' in message.text)
     dp.register_message_handler(menu_trainings, lambda message: 'Описание тренингов' in message.text)
     dp.register_message_handler(guide, lambda message: 'Памятка для участия в тренинге' in message.text)
-    dp.register_message_handler(menu_command, commands=['Меню'])
     dp.register_message_handler(tech_trainings, lambda message: 'Технические тренинги' in message.text)
     dp.register_message_handler(non_tech_trainings, lambda message: 'Нетехнические тренинги' in message.text)
     dp.register_message_handler(ucar_trainings, lambda message: 'Тренинги авто с пробегом' in message.text)
@@ -384,7 +368,7 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(training_description, lambda message: 'Скачать описание всех тренингов' in message.text)
     dp.register_message_handler(cm_training_request_start,
                                 lambda message: 'Записаться на платный тренинг' in message.text)
-    dp.register_message_handler(load_request, state=FSMTraining_request.request)
+    dp.register_message_handler(load_request, state=FSMTrainingRequest.request)
     dp.register_message_handler(cm_id_correction, lambda message: 'Отправить запрос в Академию' in message.text)
     dp.register_message_handler(load_new_id, state=FSMReset.new_id)
     dp.register_message_handler(tech_schedule, lambda message: 'Технические направление' in message.text)
