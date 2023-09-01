@@ -49,7 +49,7 @@ async def client_start(message: types.Message):
                                    reply_markup=kb_client)
         elif message.from_user.id == key and values not in id_saba:
             await bot.send_message(message.from_user.id,
-                                   'Вы есть в базе, но видимо указан не корректный ID в учебном портале,',
+                                   'Вы есть в базе, но видимо указан не корректный ID в учебном портале,'
                                    'обратитесь к администратору',
                                    reply_markup=kb_ask)
             await bot.send_message(message.from_user.id, f'Указанный SABA ID - {values}')
@@ -122,7 +122,7 @@ async def load_question(message: types.Message, state: FSMContext):
 async def cm_training_request_start(message: types.Message):
     await FSMTrainingRequest.request.set()
     await bot.send_message(message.from_user.id,
-                           'Введите информацию в свободной форме. Обязательно укажите ФИО участника, дилерский центр,',
+                           'Введите информацию в свободной форме. Обязательно укажите ФИО участника, дилерский центр,'
                            'название тренанга/ов и дату начала',
                            reply_markup=kb_cancel)
 
@@ -197,7 +197,7 @@ async def commands_start(message: types.Message):
             break
         elif message.from_user.id == key and values not in id_saba:
             await bot.send_message(message.from_user.id,
-                                   'Вы есть в базе, но видимо указан не корректный ID в учебном портале,',
+                                   'Вы есть в базе, но видимо указан не корректный ID в учебном портале,'
                                    'обратитесь к администратору',
                                    reply_markup=kb_ask)  # TODO блок обращения к админу
             await bot.send_message(message.from_user.id, f'Указанный SABA ID - {values}')
