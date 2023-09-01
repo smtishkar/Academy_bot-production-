@@ -47,16 +47,16 @@ async def client_start(message: types.Message):
                                    'энтузиазмом сотрудников академии. Постепенно моя функциональность будет'
                                    'расти и я буду еще более полезен.',
                                    reply_markup=kb_client)
-        elif message.from_user.id == key and values not in id_saba:
+        elif message.from_user.id == key and str(values).upper() not in id_saba:
             await bot.send_message(message.from_user.id,
                                    'Вы есть в базе, но видимо указан не корректный ID в учебном портале,'
                                    'обратитесь к администратору',
                                    reply_markup=kb_ask)
-            await bot.send_message(message.from_user.id, f'Указанный SABA ID - {values}')
+            await bot.send_message(message.from_user.id, f'Указанный САБА ID - {values}')
     if message.from_user.id not in test_dict:
         await FSMClient.saba_id.set()
         await bot.send_message(message.from_user.id, 'Давайте начнем регистрацию!')
-        await message.reply('Введите ваше ID используемый на портале SABA',
+        await message.reply('Введите ваше ID используемый на портале САБА (learn@toyota)',
                             reply_markup=types.ReplyKeyboardRemove())
 
 
@@ -83,7 +83,7 @@ async def load_saba_id(message: types.Message, state: FSMContext):
         await sqlite_db.sql_add_user_command(state)
         await state.finish()
         await bot.send_message(message.from_user.id,
-                               'указанный id уже есть в баз обратитесть в академию', reply_markup=kb_ask)
+                               'указанный id уже есть в базе обратитесть в академию', reply_markup=kb_ask)
 
 
 """*********************************БЛОК ЗАДАВАНИЯ ВОПРОСОВ****************************************************"""
@@ -195,12 +195,12 @@ async def commands_start(message: types.Message):
                                    'будет расти и я буду еще более полезен.',
                                    reply_markup=kb_client)
             break
-        elif message.from_user.id == key and values not in id_saba:
+        elif message.from_user.id == key and str(values).upper() not in id_saba:
             await bot.send_message(message.from_user.id,
                                    'Вы есть в базе, но видимо указан не корректный ID в учебном портале,'
                                    'обратитесь к администратору',
-                                   reply_markup=kb_ask)  # TODO блок обращения к админу
-            await bot.send_message(message.from_user.id, f'Указанный SABA ID - {values}')
+                                   reply_markup=kb_ask)
+            await bot.send_message(message.from_user.id, f'Указанный вами САБА ID - {values}')
             break
     if message.from_user.id not in test_dict:
         await bot.send_message(message.from_user.id,
