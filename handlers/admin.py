@@ -57,8 +57,8 @@ async def make_changes_command(message: types.Message):
         user_id = admins.user.id
         if user_id not in admin_list:
             admin_list.append(user_id)
-    await bot.send_message(message.from_user.id, admin_list)
     if message.from_user.id in admin_list:
+        await bot.send_message(message.from_user.id, f'Список админов - {admin_list}')
         await bot.send_message(message.from_user.id, 'Что хозяин надо???', reply_markup=admin_kb.button_case_admin)
         await message.delete()
 
