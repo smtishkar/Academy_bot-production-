@@ -69,7 +69,7 @@ async def load_saba_id(message: types.Message, state: FSMContext):
         await message.reply(message.text)
         async with state.proxy() as data:
             data['user_id'] = message.from_user.id
-            data['saba_id'] = message.text
+            data['saba_id'] = str(message.text).upper()
             data['Creation_time'] = datetime.now().date()
         await sqlite_db.sql_add_user_command(state)
         await state.finish()
