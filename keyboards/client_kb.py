@@ -47,3 +47,5 @@ kb_ask_remove = ReplyKeyboardRemove()
 
 schedule_kb = ReplyKeyboardMarkup(resize_keyboard=True).add(tech_schedule_button, non_tech_schedule_button).add(
     ucar_schedule_button, back_button)
+
+
