@@ -38,7 +38,7 @@ async def client_start(message: types.Message):
     for ret in read:
         test_dict[ret[0]] = ret[1]
     for key, values in test_dict.items():
-        if message.from_user.id == key in test_dict and values in id_saba:
+        if message.from_user.id == key in test_dict and str(values).upper() in id_saba:
             await bot.send_message(message.from_user.id, 'Проверка ID номеров пройдена успешно!')
             await bot.send_message(message.from_user.id,
                                    'Добро пожаловать в Академию👋! Я бот, который будет помогать вам получать'
@@ -186,7 +186,7 @@ async def commands_start(message: types.Message):
     for ret in read:
         test_dict[ret[0]] = ret[1]
     for key, values in test_dict.items():
-        if message.from_user.id == key and values in id_saba:
+        if message.from_user.id == key and str(values).upper() in id_saba:
             await bot.send_message(message.from_user.id, 'Проверка ID номеров пройдена успешно!')
             await bot.send_message(message.from_user.id, 'Добро пожаловать в Академию👋! Я бот, который будет помогать вам получать'
                                    'интересующую вас информацию и всегда оставаться в курсе последних новостей'
