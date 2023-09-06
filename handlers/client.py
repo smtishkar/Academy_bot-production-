@@ -36,6 +36,8 @@ async def client_start(message: types.Message):
     read = await sqlite_db.sql_read_users()
     test_dict = {}
     for ret in read:
+        if "_" in ret[1]:
+            ret[1] = ret[1].replace ('_',"#")
         test_dict[ret[0]] = ret[1]
     for key, values in test_dict.items():
         if message.from_user.id == key in test_dict and str(values).upper() in id_saba:
@@ -184,6 +186,8 @@ async def commands_start(message: types.Message):
     read = await sqlite_db.sql_read_users()
     test_dict = {}
     for ret in read:
+        if "_" in ret[1]:
+            ret[1] = ret[1].replace ('_',"#")
         test_dict[ret[0]] = ret[1]
     for key, values in test_dict.items():
         if message.from_user.id == key and str(values).upper() in id_saba:

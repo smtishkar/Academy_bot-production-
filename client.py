@@ -173,7 +173,8 @@ async def load_new_id(message: types.Message, state: FSMContext):
                 data['Creation_time'] = datetime.now().date()
     await sqlite_db.sql_add_questions(state)
     await state.finish()
-    await message.reply('Спасибо вам за обращение, скоро мы вернемся с информацией!')
+    await message.reply('Спасибо вам за предоставленную информацию! В ближайшее время мы '
+                        'скорректируем ID и вернемся к вам')
 
 
 """***************************************************************************************************************"""

@@ -215,9 +215,9 @@ async def load_content(message: types.Message, state: FSMContext):
         else:
             async with state.proxy() as data:
                 data['content'] = message.text
-            await bot.send_message(CHANEL_ID,
-                                   text=f"<b>Тема:</b> {data['topic']}\n<b>Содержание:</b> {data['content']}",
-                                   parse_mode='html') #, reply_markup=admin_kb.ikb_start)
+            # await bot.send_message(CHANEL_ID,
+            #                        text=f"<b>Тема:</b> {data['topic']}\n<b>Содержание:</b> {data['content']}",
+            #                        parse_mode='html') #, reply_markup=admin_kb.ikb_start)
             read = await sqlite_db.sql_read_users()
             for ret in read:
                 await bot.send_message(ret[0],
