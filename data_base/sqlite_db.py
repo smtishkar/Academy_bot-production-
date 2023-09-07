@@ -109,8 +109,6 @@ async def sql_read_ucar_schedule(message):
 
 async def sql_read_trainings2():
     return cur.execute('SELECT * FROM trainings').fetchall()
-async def sql_read2():
-    return cur.execute('SELECT * FROM menu').fetchall()
 
 async def sql_read_questions(message):
     for ret in cur.execute('SELECT * FROM questions WHERE status != "Done"').fetchall():
@@ -122,6 +120,9 @@ async def sql_read_questions2():
 async def sql_read_schedule2():
     return cur.execute('SELECT * FROM schedule').fetchall()
 
+async def sql_read_users2():
+    return cur.execute('SELECT * FROM users').fetchall()
+
 async def sql_questions_change_status(data):
     cur.execute('UPDATE questions SET status = "Done" WHERE id == ?', (data,))
     base.commit()
@@ -129,6 +130,11 @@ async def sql_questions_change_status(data):
 async def sql_questions_add_reply(state):
     async with state.proxy() as data:
         cur.execute('UPDATE questions SET reply = ?  WHERE id == ?', (data['reply'], data['question_id']))
+        base.commit()
+
+async def sql_users_add_new_saba_id(state):
+    async with state.proxy() as data:
+        cur.execute('UPDATE users SET saba_id = ?  WHERE user_id == ?', (data['new_saba_id'], int(data['id_user'])))
         base.commit()
 
 async def sql_delete_command(data):

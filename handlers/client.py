@@ -36,8 +36,10 @@ async def client_start(message: types.Message):
     read = await sqlite_db.sql_read_users()
     test_dict = {}
     for ret in read:
-        if "_" in ret[1]:
-            ret[1] = ret[1].replace ('_',"#")
+        # changed_id = ''
+        # if "_" in ret[1]:
+        #     changed_id = ret[1].replace('_', "#")
+        #     test_dict[ret[0]] = changed_id
         test_dict[ret[0]] = ret[1]
     for key, values in test_dict.items():
         if message.from_user.id == key in test_dict and str(values).upper() in id_saba:
@@ -72,6 +74,8 @@ async def load_saba_id(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['user_id'] = message.from_user.id
             data['saba_id'] = str(message.text).upper()
+            if '_' in data['saba_id']:
+                data['saba_id'] = data['saba_id'].replace('_', '#')
             data['Creation_time'] = datetime.now().date()
         await sqlite_db.sql_add_user_command(state)
         await state.finish()
@@ -185,9 +189,11 @@ async def load_new_id(message: types.Message, state: FSMContext):
 async def commands_start(message: types.Message):
     read = await sqlite_db.sql_read_users()
     test_dict = {}
+    # changed_id =''
     for ret in read:
-        if "_" in ret[1]:
-            ret[1] = ret[1].replace ('_',"#")
+        # if "_" in ret[1]:
+        #     changed_id = ret[1].replace ('_',"#")
+        # test_dict[ret[0]] = changed_id
         test_dict[ret[0]] = ret[1]
     for key, values in test_dict.items():
         if message.from_user.id == key and str(values).upper() in id_saba:

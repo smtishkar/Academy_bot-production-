@@ -5,6 +5,7 @@ button_load2 = KeyboardButton('Список тренингов')
 button_load3 = KeyboardButton('Проверить вопросы дилеров')
 button_load4 = KeyboardButton('Тренинг расписание')
 button_load5 = KeyboardButton('Сделать пост')
+button_load6 = KeyboardButton('Изменить SABA ID')
 
 schedule_add = KeyboardButton('Добавить тренинг в расписание')
 schedule_delete = KeyboardButton('Удалить тренинг из расписания')
@@ -24,7 +25,7 @@ admin_cancel_kb = ReplyKeyboardMarkup(resize_keyboard=True).add(admin_cancel_but
 processing_buttons = ReplyKeyboardMarkup(resize_keyboard=True).add(button_reply_question, button_send_reply).add(
     button_change_status, button_back_admin)
 button_case_admin = ReplyKeyboardMarkup(resize_keyboard=True).add(button_load2, button_load4) \
-    .add(button_load3, button_load5)
+    .add(button_load3, button_load5).add(button_load6)
 kb_training_description = ReplyKeyboardMarkup(resize_keyboard=True).add(add_training_description,
                                                                         remove_training_description).add(
     main_menu_button)
