@@ -53,14 +53,17 @@ async def client_start(message: types.Message):
                                    reply_markup=kb_client)
         elif message.from_user.id == key and str(values).upper() not in id_saba:
             await bot.send_message(message.from_user.id,
-                                   'Вы есть в базе, но видимо указан не корректный ID в учебном портале, '
-                                   'обратитесь к администратору',
+                                   'Вы есть в базе данных пользователей, но видимо указан не корректный SABA ID '
+                                   '(ID используемый на учебном портале learn@toyota). Если вы ввели не правильный ID, '
+                                    'для его корректировки отправьте верный ID в академию, нажав кнопку '
+                                   '"Задать вопрос в Академию" расположенную ниже. ЗАдать любой вопрос так же '
+                                    'можно при нажатии кнопки "Задать вопрос в Академию"',
                                    reply_markup=kb_ask)
             await bot.send_message(message.from_user.id, f'Указанный САБА ID - {values}')
     if message.from_user.id not in test_dict:
         await FSMClient.saba_id.set()
-        await bot.send_message(message.from_user.id, 'Давайте начнем регистрацию!')
-        await message.reply('Введите ваше ID используемый на портале САБА (learn@toyota)',
+        await bot.send_message(message.from_user.id, 'Давайте начнем регистрацию! ')
+        await message.reply('Введите ваше ID используемый на портале SABA (learn@toyota)',
                             reply_markup=types.ReplyKeyboardRemove())
 
 
@@ -80,7 +83,8 @@ async def load_saba_id(message: types.Message, state: FSMContext):
         await sqlite_db.sql_add_user_command(state)
         await state.finish()
         await message.reply(
-            'Вы зарегистрированы, теперь можете еще раз ввести "/start" для доступа к основным функциям')
+            'Вы зарегистрированы, теперь можете еще раз ввести "/start" для верификации ID номеров и доступа к '
+                                            'основным функциям')
     else:
         async with state.proxy() as data:
             data['user_id'] = message.from_user.id
@@ -208,14 +212,20 @@ async def commands_start(message: types.Message):
             break
         elif message.from_user.id == key and str(values).upper() not in id_saba:
             await bot.send_message(message.from_user.id,
-                                   'Вы есть в базе, но видимо указан не корректный ID в учебном портале, '
-                                   'обратитесь к администратору',
+                                   'Вы есть в базе данных пользователей, но видимо указан не корректный SABA ID '
+                                   '(ID используемый на учебном портале learn@toyota). Если вы ввели не правильный ID, '
+                                    'для его корректировки отправьте верный ID в академию, нажав кнопку '
+                                   '"Задать вопрос в Академию" расположенную ниже. ЗАдать любой вопрос так же '
+                                    'можно при нажатии кнопки "Задать вопрос в Академию"',
                                    reply_markup=kb_ask)
-            await bot.send_message(message.from_user.id, f'Указанный вами САБА ID - {values}')
+            await bot.send_message(message.from_user.id, f'Указанный вами SABA ID - {values}')
             break
     if message.from_user.id not in test_dict:
         await bot.send_message(message.from_user.id,
-                               'Вам нужно пройти регистрацию, для этого нажмите соответсвующую кнопку',
+                               'Вам нужно пройти регистрацию, для этого нажмите соответствующую кнопку внизу. '
+                                'Для регистрации вам понадобится SABA ID (ID используемый на учебном портале '
+                                'learn@toyota. Узнать SABA ID вы можете у вашего локального тренера, '
+                                'либо написать email в Академию',
                                reply_markup=registration_kb)
     # await bot.send_message(message.from_user.id, 'Вам нужно пройти регистрацию, для этого нажмите',
     # 'соответсвующую кнопку', reply_markup=registration_kb)        #Это заглушка для создания первого юзера в базе
