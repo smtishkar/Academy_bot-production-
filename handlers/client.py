@@ -56,8 +56,8 @@ async def client_start(message: types.Message):
                                    'Вы есть в базе данных пользователей, но видимо указан не корректный SABA ID '
                                    '(ID используемый на учебном портале learn@toyota). Если вы ввели не правильный ID, '
                                     'для его корректировки отправьте верный ID в академию, нажав кнопку '
-                                   '"Задать вопрос в Академию" расположенную ниже. ЗАдать любой вопрос так же '
-                                    'можно при нажатии кнопки "Задать вопрос в Академию"',
+                                   '"Отправит запрос в Академию" расположенную ниже. Задать любой вопрос так же '
+                                    'можно при нажатии этой же кнопки.',
                                    reply_markup=kb_ask)
             await bot.send_message(message.from_user.id, f'Указанный САБА ID - {values}')
     if message.from_user.id not in test_dict:
@@ -215,8 +215,8 @@ async def commands_start(message: types.Message):
                                    'Вы есть в базе данных пользователей, но видимо указан не корректный SABA ID '
                                    '(ID используемый на учебном портале learn@toyota). Если вы ввели не правильный ID, '
                                     'для его корректировки отправьте верный ID в академию, нажав кнопку '
-                                   '"Задать вопрос в Академию" расположенную ниже. ЗАдать любой вопрос так же '
-                                    'можно при нажатии кнопки "Задать вопрос в Академию"',
+                                   '"Отправит запрос в Академию" расположенную ниже. Задать любой вопрос так же '
+                                    'можно при нажатии этой же кнопки.',
                                    reply_markup=kb_ask)
             await bot.send_message(message.from_user.id, f'Указанный вами SABA ID - {values}')
             break
@@ -225,7 +225,7 @@ async def commands_start(message: types.Message):
                                'Вам нужно пройти регистрацию, для этого нажмите соответствующую кнопку внизу. '
                                 'Для регистрации вам понадобится SABA ID (ID используемый на учебном портале '
                                 'learn@toyota. Узнать SABA ID вы можете у вашего локального тренера, '
-                                'либо написать email в Академию',
+                                'либо написать email в Академию.',
                                reply_markup=registration_kb)
     # await bot.send_message(message.from_user.id, 'Вам нужно пройти регистрацию, для этого нажмите',
     # 'соответсвующую кнопку', reply_markup=registration_kb)        #Это заглушка для создания первого юзера в базе
@@ -261,7 +261,7 @@ async def guide(message: types.Message):
 
 # Не позволяет вводить что угодно, только команды
 async def empty(message: types.Message):
-    await bot.send_message(message.from_user.id, 'Нет такой команды')
+    await bot.send_message(message.from_user.id, 'Нет такой команды. Если вы хотите запустить бота введите "/start"')
     await message.delete()
 
 
