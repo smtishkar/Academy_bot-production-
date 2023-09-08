@@ -360,7 +360,7 @@ async def load_new_id_to_db(message: types.Message, state: FSMContext):
             read = await sqlite_db.sql_read_users2()
             for ret in read:
                 if ret[0] == int(data['id_user']):
-                    await bot.send_message(message.from_user.id, 'Мы в ветке')
+                    # await bot.send_message(message.from_user.id, 'Мы в ветке')
                     # data['new_saba_id'] = datetime.now().date()
                     await sqlite_db.sql_users_add_new_saba_id(state)
             print(data['id_user'])
@@ -553,7 +553,7 @@ async def delete_schedule(message: types.Message):
         read = await sqlite_db.sql_read_schedule2()
         for ret in read:
             await bot.send_message(message.from_user.id,
-                                   f'Название: {ret[1]}\nНачало тренинга: {ret[2]}\nОкончание тренинга: {ret[3]}\n\
+                                   f'Название: {ret[1]}\nНачало тренинга: {ret[2]}\nОкончание тренинга: {ret[3]}\n \
                                    Формат: {ret[4]}\nЦена: {ret[-1]}')
             await bot.send_message(chat_id=message.from_user.id,
                                    text='^^^',
