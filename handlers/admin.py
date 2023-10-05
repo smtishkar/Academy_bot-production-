@@ -646,7 +646,7 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(main_menu, lambda message: 'Главное меню' in message.text)
     dp.register_message_handler(training_description_menu, lambda message: 'Список тренингов' in message.text)
     dp.register_message_handler(delete_training_description,
-                                lambda message: 'Удалить опсиание тренинга' in message.text)
+                                lambda message: 'Удалить описание тренинга' in message.text)
     dp.register_message_handler(cm_change_saba_id, lambda message: 'Изменить SABA ID' in message.text,
                                 state=None)
     dp.register_message_handler(load_id_user, state=FSMiDCorrect.id_user)
