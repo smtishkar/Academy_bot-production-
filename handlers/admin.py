@@ -176,8 +176,11 @@ async def delete_training_description(message: types.Message):
         read = await sqlite_db.sql_read_trainings2()
         for ret in read:
             await bot.send_photo(message.from_user.id, ret[0],
-                                 f'Название: {ret[1]}\nЦелевая аудитория: {ret[3]}\nСодержание:\n{ret[4]}\n\
-                                 Формат: {ret[5]}\nЦена: {ret[-1]}')
+                                 f'Название: {ret[1]}\n'
+                                 f'Целевая аудитория: {ret[3]}\n'
+                                 f'Содержание:\n{ret[4]}\n'
+                                 f'Формат: {ret[5]}\n'
+                                 f'Цена: {ret[-1]}')
             await bot.send_message(chat_id=message.from_user.id,
                                    text='^^^',
                                    reply_markup=InlineKeyboardMarkup().add(
@@ -192,6 +195,7 @@ async def del_callback_schedule(callback_query: types.CallbackQuery):
 
 
 """***********************************************БЛОК ДЕЛАЕМ ПОСТ ************************************************"""
+
 
 async def cm_post_start(message: types.Message):
     if message.from_user.id in admin_list:
@@ -367,7 +371,6 @@ async def load_new_id_to_db(message: types.Message, state: FSMContext):
             print(data['new_saba_id'])
             await state.finish()
             await message.reply('ID успешно изменен', reply_markup=admin_kb.button_case_admin)
-
 
 
 """***************************************БЛОК ЗАПИСИ НА ТРЕНИНГ**************************************"""
@@ -553,8 +556,11 @@ async def delete_schedule(message: types.Message):
         read = await sqlite_db.sql_read_schedule2()
         for ret in read:
             await bot.send_message(message.from_user.id,
-                                   f'Название: {ret[1]}\nНачало тренинга: {ret[2]}\nОкончание тренинга: {ret[3]}\n \
-                                   Формат: {ret[4]}\nЦена: {ret[-1]}')
+                                   f'Название: {ret[1]}\n'
+                                   f'Начало тренинга: {ret[2]}\n'
+                                   f'Окончание тренинга: {ret[3]}\n'
+                                   f'Формат: {ret[4]}\n'
+                                   f'Цена: {ret[-1]}')
             await bot.send_message(chat_id=message.from_user.id,
                                    text='^^^',
                                    reply_markup=InlineKeyboardMarkup().add(
@@ -570,7 +576,8 @@ async def del_callback_schedule(callback_query: types.CallbackQuery):
 
 """***********************************************************************************************************"""
 
-#Обновляем базу САБА
+
+# Обновляем базу САБА
 # async def db_update(message: types.Message):
 #     if message.from_user.id in admin_list:
 #         excel_data_df = read_excel('lms_id.xlsx', sheet_name='sheet1')

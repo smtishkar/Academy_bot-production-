@@ -12,7 +12,7 @@ schedule_delete = KeyboardButton('Удалить тренинг из распи�
 main_menu_button = KeyboardButton('Главное меню')
 
 add_training_description = KeyboardButton('Добавить описание тренинга')
-remove_training_description = KeyboardButton('Удалить опсиание тренинга')
+remove_training_description = KeyboardButton('Удалить описание тренинга')
 
 button_reply_question = KeyboardButton('Ответить')
 button_send_reply = KeyboardButton('Отправить ответ')

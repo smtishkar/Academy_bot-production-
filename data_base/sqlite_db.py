@@ -101,7 +101,7 @@ async def sql_read_non_tech_schedule(message):
                                f'<b><u>Название:</u></b> {ret[1]}\n<b><u>Целевая аудитория:</u></b> {ret[2]}\n<b><u>Начало тренинга:</u></b> {ret[3]}\n<b><u>Окончание тренинга:</u></b> {ret[4]}\n<b><u>Формат:</u></b> {ret[5]}\n<b><u>Цена:</u></b> {ret[-1]}',
                                parse_mode='HTML')
 async def sql_read_ucar_schedule(message):
-    for ret in cur.execute('SELECT * FROM schedule WHERE for_whom LIKE "Закупщики автомобилей"').fetchall():
+    for ret in cur.execute('SELECT * FROM schedule WHERE for_whom LIKE "Закупщики автомобилей" OR for_whom LIKE "Продавцы автомобилей с пробегом"').fetchall():
         # await bot.send_photo(message.from_user.id, ret[0], f'<b><u>Название:</u></b> {ret[1]}\n<b><u>Целевая аудитория:</u></b> {ret[3]}\n<b><u>Содержание:</u></b>\n{ret[4]}\n<b><u>Формат:</u></b> {ret[5]}\n<b><u>Цена:</u></b> {ret[-1]}', parse_mode='HTML')
         await bot.send_message(message.from_user.id,
                                f'<b><u>Название:</u></b> {ret[1]}\n<b><u>Целевая аудитория:</u></b> {ret[2]}\n<b><u>Начало тренинга:</u></b> {ret[3]}\n<b><u>Окончание тренинга:</u></b> {ret[4]}\n<b><u>Формат:</u></b> {ret[5]}\n<b><u>Цена:</u></b> {ret[-1]}',
