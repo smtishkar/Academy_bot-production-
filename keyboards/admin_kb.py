@@ -31,6 +31,6 @@ kb_training_description = ReplyKeyboardMarkup(resize_keyboard=True).add(add_trai
 schedule_kb = ReplyKeyboardMarkup(resize_keyboard=True).add(schedule_add, schedule_delete).add(main_menu_button)
 
 # кнопка, чтобы делать посты в канале с синей кнопкой
-start_button = InlineKeyboardButton('start', url='https://t.me/Toyota_academy_bot')
+start_button = InlineKeyboardButton('Бот', url='https://t.me/Toyota_academy_bot')
 ikb_start = InlineKeyboardMarkup()
 ikb_start.add(start_button)

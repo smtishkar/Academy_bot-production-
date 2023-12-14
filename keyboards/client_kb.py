@@ -5,7 +5,7 @@ b1 = KeyboardButton('📚 Описание тренингов')
 b2 = KeyboardButton('☎ Контакты')
 b3 = KeyboardButton('📆 Расписание тренингов')
 b4 = KeyboardButton('📨 Задать вопрос Академии')
-b5 = KeyboardButton('📋 Памятка для участия в тренинге')
+b5 = KeyboardButton('🇯🇵 Лучшие практики дилеров Японии')
 b6 = KeyboardButton('✏ Записаться на платный тренинг')
 reg_but = KeyboardButton('/Регистрация')
 

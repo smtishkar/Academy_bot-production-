@@ -224,8 +224,8 @@ async def contacts(message: types.Message):
                                    '<b>Менеджер:</b>\n<i>Сергей Тишкарь</i>: 8-916-351-72-03\n\n<b>Не '
                                    'техническое обучение:</b>\n<i>Владимир Крамсин</i>: '
                                    '8-916-532-08-75\n\n<b>Техническое обучение:</b>\n<i>Сергей Латахин</i>: '
-                                   '8-985-768-49-37\n\n<b>Обучение авто с пробегом:</b>\n<i>Александр '
-                                   'Родионов</i>: 8-926-012-22-23', parse_mode='html')
+                                   '8-985-768-49-37\n\n<b>Обучение авто с пробегом:</b>\n<i>Роман '
+                                   'Ростовцев</i>: 8-985-969-19-45', parse_mode='html')
 
 
 # Отправка гайда
@@ -236,7 +236,7 @@ async def guide(message: types.Message):
         test_dict[ret[0]] = ret[1]
     for key, values in test_dict.items():
         if message.from_user.id == key and values in id_saba:
-            await message.answer_document(open('guide.pdf', 'rb'))
+            await message.answer_document(open('bp(Japan).pdf', 'rb'))
 
 
 # Не позволяет вводить что угодно, только команды
@@ -360,7 +360,7 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(load_question, state=FSMQuestion.question)
     dp.register_message_handler(contacts, lambda message: 'Контакты' in message.text)
     dp.register_message_handler(menu_trainings, lambda message: 'Описание тренингов' in message.text)
-    dp.register_message_handler(guide, lambda message: 'Памятка для участия в тренинге' in message.text)
+    dp.register_message_handler(guide, lambda message: 'Лучшие практики дилеров Японии' in message.text)
     dp.register_message_handler(tech_trainings, lambda message: 'Технические тренинги' in message.text)
     dp.register_message_handler(non_tech_trainings, lambda message: 'Нетехнические тренинги' in message.text)
     dp.register_message_handler(ucar_trainings, lambda message: 'Тренинги авто с пробегом' in message.text)
