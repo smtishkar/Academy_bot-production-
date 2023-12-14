@@ -49,6 +49,11 @@ class FSMScedule(StatesGroup):
     price = State()
 
 
+class FSMiDCorrect(StatesGroup):
+    id_user = State()
+    new_saba_id = State()
+
+
 # Основная комада для доступа к функциям админа. Получаем ID текущего модератора
 async def make_changes_command(message: types.Message):
     global chat_admins
@@ -171,8 +176,11 @@ async def delete_training_description(message: types.Message):
         read = await sqlite_db.sql_read_trainings2()
         for ret in read:
             await bot.send_photo(message.from_user.id, ret[0],
-                                 f'Название: {ret[1]}\nЦелевая аудитория: {ret[3]}\nСодержание:\n{ret[4]}\n\
-                                 Формат: {ret[5]}\nЦена: {ret[-1]}')
+                                 f'Название: {ret[1]}\n'
+                                 f'Целевая аудитория: {ret[3]}\n'
+                                 f'Содержание:\n{ret[4]}\n'
+                                 f'Формат: {ret[5]}\n'
+                                 f'Цена: {ret[-1]}')
             await bot.send_message(chat_id=message.from_user.id,
                                    text='^^^',
                                    reply_markup=InlineKeyboardMarkup().add(
@@ -187,6 +195,7 @@ async def del_callback_schedule(callback_query: types.CallbackQuery):
 
 
 """***********************************************БЛОК ДЕЛАЕМ ПОСТ ************************************************"""
+
 
 async def cm_post_start(message: types.Message):
     if message.from_user.id in admin_list:
@@ -215,9 +224,9 @@ async def load_content(message: types.Message, state: FSMContext):
         else:
             async with state.proxy() as data:
                 data['content'] = message.text
-            await bot.send_message(CHANEL_ID,
-                                   text=f"<b>Тема:</b> {data['topic']}\n<b>Содержание:</b> {data['content']}",
-                                   parse_mode='html') #, reply_markup=admin_kb.ikb_start)
+            # await bot.send_message(CHANEL_ID,
+            #                        text=f"<b>Тема:</b> {data['topic']}\n<b>Содержание:</b> {data['content']}",
+            #                        parse_mode='html') #, reply_markup=admin_kb.ikb_start)
             read = await sqlite_db.sql_read_users()
             for ret in read:
                 await bot.send_message(ret[0],
@@ -319,6 +328,49 @@ async def change_status(callback_query: types.CallbackQuery):
 
 async def back_to_main_admin(message: types.Message):
     await bot.send_message(message.from_user.id, 'Выберите пункт меню:', reply_markup=admin_kb.button_case_admin)
+
+
+"""***************************************БЛОК КОРРЕКТИРОВКИ id**************************************"""
+
+
+# Отвечаем на вопрос клиента
+async def cm_change_saba_id(message: types.Message):
+    if message.from_user.id in admin_list:
+        await FSMiDCorrect.id_user.set()
+        await bot.send_message(message.from_user.id, 'Введите телегам ID человека кому надо поменять SABA ID ',
+                               reply_markup=admin_kb.admin_cancel_kb)
+
+
+async def load_id_user(message: types.Message, state: FSMContext):  # TODO обработка если ID нет в списке
+    if message.from_user.id in admin_list:
+        if message.text == 'Отменить ввод':
+            await state.finish()
+            await message.reply('Ввод отменен, выберите пункт меню', reply_markup=admin_kb.button_case_admin)
+        else:
+            async with state.proxy() as data:
+                data['id_user'] = message.text
+            await FSMiDCorrect.next()
+            await message.reply('Введите новый SABA ID')
+
+
+async def load_new_id_to_db(message: types.Message, state: FSMContext):
+    if message.from_user.id in admin_list:
+        if message.text == 'Отменить ввод':
+            await state.finish()
+            await message.reply('Ввод отменен, выберите пункт меню', reply_markup=admin_kb.button_case_admin)
+        else:
+            async with state.proxy() as data:
+                data['new_saba_id'] = message.text
+            read = await sqlite_db.sql_read_users2()
+            for ret in read:
+                if ret[0] == int(data['id_user']):
+                    # await bot.send_message(message.from_user.id, 'Мы в ветке')
+                    # data['new_saba_id'] = datetime.now().date()
+                    await sqlite_db.sql_users_add_new_saba_id(state)
+            print(data['id_user'])
+            print(data['new_saba_id'])
+            await state.finish()
+            await message.reply('ID успешно изменен', reply_markup=admin_kb.button_case_admin)
 
 
 """***************************************БЛОК ЗАПИСИ НА ТРЕНИНГ**************************************"""
@@ -504,8 +556,11 @@ async def delete_schedule(message: types.Message):
         read = await sqlite_db.sql_read_schedule2()
         for ret in read:
             await bot.send_message(message.from_user.id,
-                                   f'Название: {ret[1]}\nНачало тренинга: {ret[2]}\nОкончание тренинга: {ret[3]}\n\
-                                   Формат: {ret[4]}\nЦена: {ret[-1]}')
+                                   f'Название: {ret[1]}\n'
+                                   f'Начало тренинга: {ret[2]}\n'
+                                   f'Окончание тренинга: {ret[3]}\n'
+                                   f'Формат: {ret[4]}\n'
+                                   f'Цена: {ret[-1]}')
             await bot.send_message(chat_id=message.from_user.id,
                                    text='^^^',
                                    reply_markup=InlineKeyboardMarkup().add(
@@ -521,7 +576,8 @@ async def del_callback_schedule(callback_query: types.CallbackQuery):
 
 """***********************************************************************************************************"""
 
-#Обновляем базу САБА
+
+# Обновляем базу САБА
 # async def db_update(message: types.Message):
 #     if message.from_user.id in admin_list:
 #         excel_data_df = read_excel('lms_id.xlsx', sheet_name='sheet1')
@@ -590,4 +646,8 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(main_menu, lambda message: 'Главное меню' in message.text)
     dp.register_message_handler(training_description_menu, lambda message: 'Список тренингов' in message.text)
     dp.register_message_handler(delete_training_description,
-                                lambda message: 'Удалить опсиание тренинга' in message.text)
+                                lambda message: 'Удалить описание тренинга' in message.text)
+    dp.register_message_handler(cm_change_saba_id, lambda message: 'Изменить SABA ID' in message.text,
+                                state=None)
+    dp.register_message_handler(load_id_user, state=FSMiDCorrect.id_user)
+    dp.register_message_handler(load_new_id_to_db, state=FSMiDCorrect.new_saba_id)
